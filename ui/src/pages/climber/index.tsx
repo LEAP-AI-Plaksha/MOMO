@@ -1,10 +1,10 @@
 import { StrictMode } from 'react';
-import Singup from './page';
+import Page from './page';
 
-export default function Signin() {
+export default function Dashboard() {
   return (
     <StrictMode>
-      <Singup />
+      <Page />
     </StrictMode>
   );
 }

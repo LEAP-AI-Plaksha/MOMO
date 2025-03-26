@@ -1,30 +1,7 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Sparkles, BookOpen, Share2, FileText, Clock, Star, Users } from 'lucide-react';
+import { Clock, Star, Users } from 'lucide-react';
 import { Button } from '@/components/Button';
-
-const features = [
-  {
-    icon: <BookOpen className="h-6 w-6" />,
-    title: 'Upload Lectures',
-    description: 'Share your knowledge by uploading video lectures easily.',
-  },
-  {
-    icon: <Sparkles className="h-6 w-6" />,
-    title: 'Auto Transcription',
-    description: 'Get accurate transcriptions powered by advanced AI.',
-  },
-  {
-    icon: <FileText className="h-6 w-6" />,
-    title: 'Smart Summaries',
-    description: 'Generate concise summaries in multiple formats.',
-  },
-  {
-    icon: <Share2 className="h-6 w-6" />,
-    title: 'Share Newsletters',
-    description: 'Convert and share your content as professional newsletters.',
-  },
-];
 
 const recentNewsletters = [
   {
@@ -55,103 +32,48 @@ const recentNewsletters = [
     image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2400',
   },
 ];
+const oldNewsletters = [
+  {
+    id: '4',
+    title: 'Introduction to Blockchain Technology',
+    author: 'Daniel Parker',
+    date: '2023-12-25',
+    readTime: '7 min read',
+    likes: 200,
+    image: 'https://images.unsplash.com/photo-1599480220716-355777328d2c?auto=format&fit=crop&q=80&w=2400',
+  },
+  {
+    id: '5',
+    title: 'Web Development Basics',
+    author: 'Jane Doe',
+    date: '2023-12-20',
+    readTime: '4 min read',
+    likes: 178,
+    image: 'https://images.unsplash.com/photo-1599724416576-76d5b2f4233f?auto=format&fit=crop&q=80&w=2400',
+  },
+  {
+    id: '6',
+    title: 'React.js for Beginners',
+    author: 'Michael Johnson',
+    date: '2023-12-15',
+    readTime: '3 min read',
+    likes: 150,
+    image: 'https://images.unsplash.com/photo-1599703271404-6855a367384d?auto=format&fit=crop&q=80&w=2400',
+  },
+  {
+    id: '7',
+    title: 'Node.js and Express.js',
+    author: 'Sarah Chen',
+    date: '2023-12-10',
+    readTime: '2 min read',
+    likes: 120,
+    image: 'https://images.unsplash.com/photo-1599698265347-782725418f96?auto=format&fit=crop&q=80&w=2400',
+  }
+];
 
 export default function HomePage() {
-  const isLoggedIn = false; // TODO: Replace with actual auth state
-
   return (
     <div className="space-y-24">
-      {/* Hero Section */}
-      <section className="relative">
-        <div className="mx-auto max-w-3xl text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl"
-          >
-            Transform Your Lectures into
-            <span className="text-blue-600"> Engaging Content</span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="mt-6 text-lg leading-8 text-gray-600"
-          >
-            Upload your lectures, get instant transcriptions, and create professional
-            newsletters with AI-powered summaries. Share your knowledge effectively.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="mt-10 flex items-center justify-center gap-x-6"
-          >
-            {isLoggedIn ? (
-              <>
-                <Link href="/upload" >
-                  <Button size="lg">
-                    Upload Lecture
-                  </Button>
-                </Link>
-                <Link href="/dashboard" >
-                  <Button variant="outline" size="lg">
-                    Go to Dashboard
-                  </Button>
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link href="/signup" >
-                  <Button size="lg" >
-                    Get Started
-                  </Button>
-                </Link>
-                <Link href="#features" >
-                  <Button variant="outline" size="lg" as="a">
-                    Learn More
-                  </Button>
-                </Link>
-              </>
-            )}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section id="features" className="relative scroll-mt-16">
-        <div className="mx-auto max-w-7xl">
-          <motion.h2
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="mb-12 text-center text-3xl font-bold text-gray-900"
-          >
-            Everything You Need
-          </motion.h2>
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {features.map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="group relative rounded-2xl border border-gray-200 bg-white p-6 transition-all hover:shadow-lg"
-              >
-                <div className="mb-4 inline-block rounded-lg bg-blue-100 p-3 text-blue-600 transition-transform group-hover:scale-110">
-                  {feature.icon}
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900">
-                  {feature.title}
-                </h3>
-                <p className="mt-2 text-gray-600">{feature.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Latest Newsletters Section */}
       <section className="relative">
         <div className="mx-auto max-w-7xl">
@@ -209,30 +131,53 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* CTA Section */}
+      
+      {/* Old Newsletters Section */}
       <section className="relative">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mx-auto max-w-3xl rounded-2xl bg-blue-600 px-8 py-16 text-center text-white"
-        >
-          <h2 className="mb-4 text-3xl font-bold">Ready to Get Started?</h2>
-          <p className="mb-8 text-lg text-blue-100">
-            Join thousands of educators and speakers who are already using our platform
-            to share their knowledge effectively.
-          </p>
-          <Link href="/signup" >
-            <Button
-              variant="secondary"
-              size="lg"
-              className="bg-white text-blue-600 hover:bg-blue-50"
-            >
-              Start Creating Now
-            </Button>
-          </Link>
-        </motion.div>
+        <div className="mx-auto max-w-7xl">
+          <motion.h2
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="mb-12 text-center text-3xl font-bold text-gray-900"
+          >
+            Newsletters
+          </motion.h2>
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {oldNewsletters.map((newsletter, index) => (
+              <motion.article
+                key={newsletter.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="group overflow-hidden rounded-xl border bg-white shadow-sm transition-all hover:shadow-lg"
+              >
+                <div className="p-6">
+                  <Link href={`/newsletter/${newsletter.id}`} >
+                    <h3 className="mb-2 text-xl font-semibold text-gray-900">
+                      {newsletter.title}
+                    </h3>
+                    <div className="mb-4 flex items-center space-x-4 text-sm text-gray-500">
+                      <span className="flex items-center">
+                        <Users className="mr-1 h-4 w-4" />
+                        {newsletter.author}
+                      </span>
+                      <span className="flex items-center">
+                        <Clock className="mr-1 h-4 w-4" />
+                        {newsletter.readTime}
+                      </span>
+                      <span className="flex items-center">
+                        <Star className="mr-1 h-4 w-4" />
+                        {newsletter.likes}
+                      </span>
+                    </div>                    
+                  </Link>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        </div>
       </section>
     </div>
   );

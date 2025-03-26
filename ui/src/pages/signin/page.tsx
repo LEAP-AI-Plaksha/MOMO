@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { BookOpenCheck, Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { Button } from '@/components/Button';
+import Link from 'next/link';
 
-function App() {
-  const [isLogin, setIsLogin] = useState(true);
+
+export default function Signin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -38,40 +40,10 @@ function App() {
       <main className="max-w-md mx-auto pt-16 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="bg-white py-8 px-6 shadow-lg rounded-lg sm:px-10">
           <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-gray-900">
-              {isLogin ? 'Welcome Back!' : 'Create Your Account'}
-            </h2>
-            <p className="mt-2 text-sm text-gray-600">
-              {isLogin 
-                ? 'Sign in to access your transcripts'
-                : 'Get started with automatic lecture transcription'}
-            </p>
+            <h2 className="text-3xl font-bold text-gray-900"> Welcome Back! </h2>
+            <p className="mt-2 text-sm text-gray-600"> Sign in to access your transcripts </p>
           </div>
-
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {!isLogin && (
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                  Full Name
-                </label>
-                <div className="mt-1 relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    id="name"
-                    name="name"
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="pl-10 block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm border-gray-300 rounded-md"
-                    placeholder="John Doe"
-                  />
-                </div>
-              </div>
-            )}
-
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email Address
@@ -91,7 +63,6 @@ function App() {
                 />
               </div>
             </div>
-
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
@@ -113,32 +84,27 @@ function App() {
             </div>
 
             <div>
-              <button
+              <Button
                 type="submit"
                 className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 <span className="absolute right-3 inset-y-0 flex items-center">
                   <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </span>
-                {isLogin ? 'Sign In' : 'Create Account'}
-              </button>
+                </span> 
+                  Sign In
+              </Button>
             </div>
           </form>
 
-          <div className="mt-6 text-center">
+          <Link href="/signup">
             <button
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-blue-600 hover:text-blue-500"
+              className="mt-6 ml-10 text-sm text-blue-600 hover:text-blue-500"
             >
-              {isLogin
-                ? "Don't have an account? Sign up here"
-                : 'Already have an account? Sign in'}
+              Don't have an account? Sign up here
             </button>
-          </div>
+          </Link>
         </div>
       </main>
     </div>
   );
 }
-
-export default App;

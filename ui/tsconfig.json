@@ -17,6 +17,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/pages/newsletter/[id]"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/pages/artisan/newsletter/[id]"],
   "exclude": ["node_modules"]
 }

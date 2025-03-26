@@ -11,16 +11,16 @@ interface LayoutProps {
   children: ReactNode;
 }
 function NavBarButtons(isLoggedIn: boolean, pathname: string){
-  if (isLoggedIn && pathname === "/user") {
+  if (isLoggedIn && pathname.includes("/artisan")) {
     return (
       <>
-        <Link href="/upload">
+        <Link href="/artisan/upload">
           <Button variant="primary" size="sm">
             <Upload className="mr-2 h-4 w-4" />
             Upload Lecture
           </Button>
         </Link>
-        <Link href="/user">
+        <Link href="/artisan">
           <Button variant="secondary" size="sm">
             <LayoutDashboard className="mr-2 h-4 w-4" />
             Dashboard
