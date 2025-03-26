@@ -20,7 +20,7 @@ function NavBarButtons(isLoggedIn: boolean, pathname: string){
             Upload Lecture
           </Button>
         </Link>
-        <Link href="/dashboard">
+        <Link href="/user">
           <Button variant="secondary" size="sm">
             <LayoutDashboard className="mr-2 h-4 w-4" />
             Dashboard
@@ -52,7 +52,6 @@ function NavBarButtons(isLoggedIn: boolean, pathname: string){
 export default function Layout({ children }: LayoutProps) {
   const pathname = usePathname();
   const isLoggedIn = true; // TODO: Replace with actual auth state
-  {console.log(pathname, typeof pathname)}
 
   return (
     <div className="min-h-screen bg-gray-50">

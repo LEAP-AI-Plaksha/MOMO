@@ -129,7 +129,7 @@ export default function Page() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Head>
-        <title>{newsletter.title} | LectureScript</title>
+        <title>{newsletter.title}</title>
         <meta name="description" content={newsletter.title} />
       </Head>
       {/* Minimal Header */}
