@@ -13,6 +13,8 @@ import {
   ChevronDown,
   MoreVertical,
 } from 'lucide-react';
+import { Button } from '@/components/Button';
+import Link from 'next/link';
 
 // Sample newsletter data
 const sampleNewsletters = [
@@ -52,7 +54,7 @@ export default function Page() {
 
   const filteredNewsletters = newsletters.filter(newsletter => {
     const matchesSearch = newsletter.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = categoryFilter === 'all' || newsletter.category === categoryFilter;
+    const matchesCategory = categoryFilter === 'all' || newsletter.category.toLowerCase() === categoryFilter;
     return matchesSearch && matchesCategory;
   });
 
@@ -112,16 +114,17 @@ export default function Page() {
                 placeholder="Search newsletters..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="block text-gray-900 w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               />
             </div>
 
             {/* Category Filter */}
-            <div className="relative">
+            <div className="relative 
+             border-gray-300 rounded-md">
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value.toLowerCase())}
-                className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                className="block text-gray-900 w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md appearance-none"
               >
                 {categories.map((category) => (
                   <option key={category} value={category.toLowerCase()}>
@@ -130,16 +133,18 @@ export default function Page() {
                 ))}
               </select>
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <ChevronDown className="h-4 w-4 text-gray-400" />
+                <ChevronDown className="absolute inset-y-2 right-3 w-5 h-5 text-gray-700 pointer-events-none" />
               </div>
             </div>
 
             {/* Create New Newsletter Button */}
             <div className="flex justify-start md:justify-end">
-              <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                <PlusCircle className="h-5 w-5 mr-2" />
-                Create New Newsletter
-              </button>
+              <Link href="/artisan/newsletter/create">
+                <Button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                  <PlusCircle className="h-5 w-5 mr-2" />
+                  Create New Newsletter
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -150,14 +155,8 @@ export default function Page() {
             <BookOpen className="mx-auto h-12 w-12 text-gray-400" />
             <h3 className="mt-2 text-sm font-medium text-gray-900">No newsletters</h3>
             <p className="mt-1 text-sm text-gray-500">
-              You haven't published any newsletters yet. Start creating your first one!
+              You haven't published any newsletters yet. Create your first one!
             </p>
-            <div className="mt-6">
-              <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                <PlusCircle className="h-5 w-5 mr-2" />
-                Create New Newsletter
-              </button>
-            </div>
           </div>
         ) : (
           // Newsletter Grid

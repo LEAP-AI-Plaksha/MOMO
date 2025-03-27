@@ -1,155 +1,184 @@
-import React from 'react';
-import { 
-  BookOpenCheck, 
-  Upload, 
-  FileText, 
-  Mail, 
-  Clock, 
-  Plus,
-  LogOut,
-  ChevronRight,
-  Layout
-} from 'lucide-react';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { Clock, Star, Users } from 'lucide-react';
+import { Button } from '@/components/Button';
 
-// Mock data for demonstration
-const recentTranscriptions = [
-  { id: 1, title: 'Introduction to Psychology', date: '2024-03-10', duration: '45:32' },
-  { id: 2, title: 'Advanced Mathematics Lecture 3', date: '2024-03-09', duration: '52:18' },
-  { id: 3, title: 'World History: Renaissance', date: '2024-03-08', duration: '38:45' },
+const recentNewsletters = [
+  {
+    id: '1',
+    title: 'Understanding Modern Web Architecture',
+    author: 'Sarah Chen',
+    date: '2024-03-15',
+    readTime: '5 min read',
+    likes: 234,
+    image: 'https://images.unsplash.com/photo-1516116216624-53e697fedbea?auto=format&fit=crop&q=80&w=2400',
+  },
+  {
+    id: '2',
+    title: 'Machine Learning Fundamentals',
+    author: 'David Kumar',
+    date: '2024-03-14',
+    readTime: '8 min read',
+    likes: 186,
+    image: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&q=80&w=2400',
+  },
+  {
+    id: '3',
+    title: 'The Future of Cloud Computing',
+    author: 'Emily Rodriguez',
+    date: '2024-03-13',
+    readTime: '6 min read',
+    likes: 159,
+    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2400',
+  },
+];
+const oldNewsletters = [
+  {
+    id: '4',
+    title: 'Introduction to Blockchain Technology',
+    author: 'Daniel Parker',
+    date: '2023-12-25',
+    readTime: '7 min read',
+    likes: 200,
+    image: 'https://images.unsplash.com/photo-1599480220716-355777328d2c?auto=format&fit=crop&q=80&w=2400',
+  },
+  {
+    id: '5',
+    title: 'Web Development Basics',
+    author: 'Jane Doe',
+    date: '2023-12-20',
+    readTime: '4 min read',
+    likes: 178,
+    image: 'https://images.unsplash.com/photo-1599724416576-76d5b2f4233f?auto=format&fit=crop&q=80&w=2400',
+  },
+  {
+    id: '6',
+    title: 'React.js for Beginners',
+    author: 'Michael Johnson',
+    date: '2023-12-15',
+    readTime: '3 min read',
+    likes: 150,
+    image: 'https://images.unsplash.com/photo-1599703271404-6855a367384d?auto=format&fit=crop&q=80&w=2400',
+  },
+  {
+    id: '7',
+    title: 'Node.js and Express.js',
+    author: 'Sarah Chen',
+    date: '2023-12-10',
+    readTime: '2 min read',
+    likes: 120,
+    image: 'https://images.unsplash.com/photo-1599698265347-782725418f96?auto=format&fit=crop&q=80&w=2400',
+  }
 ];
 
-const savedNewsletters = [
-  { id: 1, title: 'Weekly Psychology Insights', date: '2024-03-10' },
-  { id: 2, title: 'Math Concepts Explained', date: '2024-03-09' },
-];
-
-export default function Page() {
-  const userName = "Sarah"; // This would come from your auth system
-
+export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      {/* <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center">
-              <BookOpenCheck className="h-8 w-8 text-blue-600" />
-              <span className="ml-2 text-xl font-bold text-gray-900">LectureScript</span>
-            </div>
-            <nav className="flex items-center space-x-4">
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
-                Home
-              </a>
-              <a href="#" className="text-blue-600 hover:text-blue-700 px-3 py-2 rounded-md text-sm font-medium">
-                Dashboard
-              </a>
-              <button className="flex items-center text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
-                <LogOut className="h-4 w-4 mr-1" />
-                Sign Out
-              </button>
-            </nav>
-          </div>
-        </div>
-      </header> */}
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Welcome back, {userName}!</h1>
-          <p className="mt-2 text-gray-600">
-            Manage your lectures, transcriptions, and newsletters in one place.
-          </p>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <button className="flex items-center justify-center p-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors group">
-            <Upload className="h-6 w-6 mr-2" />
-            <span className="font-medium">Upload New Lecture</span>
-            <ChevronRight className="h-5 w-5 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </button>
-          <button className="flex items-center justify-center p-6 bg-white text-gray-900 rounded-lg border-2 border-gray-200 hover:border-blue-600 transition-colors group">
-            <FileText className="h-6 w-6 mr-2 text-blue-600" />
-            <span className="font-medium">View All Lectures</span>
-            <ChevronRight className="h-5 w-5 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </button>
-          <button className="flex items-center justify-center p-6 bg-white text-gray-900 rounded-lg border-2 border-gray-200 hover:border-blue-600 transition-colors group">
-            <Mail className="h-6 w-6 mr-2 text-blue-600" />
-            <span className="font-medium">Create Newsletter</span>
-            <ChevronRight className="h-5 w-5 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </button>
-        </div>
-
-        {/* Dashboard Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Recent Transcriptions */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Recent Transcriptions</h2>
-              <button className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center">
-                View All
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </button>
-            </div>
-            <div className="space-y-4">
-              {recentTranscriptions.map((transcription) => (
-                <div key={transcription.id} className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                  <div className="flex-shrink-0">
-                    <FileText className="h-8 w-8 text-blue-600" />
-                  </div>
-                  <div className="ml-4 flex-1">
-                    <h3 className="text-sm font-medium text-gray-900">{transcription.title}</h3>
-                    <div className="flex items-center mt-1 text-xs text-gray-500">
-                      <Clock className="h-3 w-3 mr-1" />
-                      <span>{transcription.duration}</span>
-                      <span className="mx-2">•</span>
-                      <span>{new Date(transcription.date).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-                  <button className="ml-4 text-gray-400 hover:text-gray-600">
-                    <ChevronRight className="h-5 w-5" />
-                  </button>
+    <div className="space-y-24">
+      {/* Latest Newsletters Section */}
+      <section className="relative">
+        <div className="mx-auto max-w-7xl">
+          <motion.h2
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="mb-12 text-center text-3xl font-bold text-gray-900"
+          >
+            Latest Published Newsletters
+          </motion.h2>
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {recentNewsletters.map((newsletter, index) => (
+              <motion.article
+                key={newsletter.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="group overflow-hidden rounded-xl border bg-white shadow-sm transition-all hover:shadow-lg"
+              >
+                <div className="aspect-w-16 aspect-h-9 overflow-hidden">
+                  <img
+                    src={newsletter.image}
+                    alt={newsletter.title}
+                    className="h-48 w-full object-cover transition-transform group-hover:scale-105"
+                  />
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Saved Newsletters */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Saved Newsletters</h2>
-              <button className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center">
-                View All
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </button>
-            </div>
-            <div className="space-y-4">
-              {savedNewsletters.map((newsletter) => (
-                <div key={newsletter.id} className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                  <div className="flex-shrink-0">
-                    <Mail className="h-8 w-8 text-blue-600" />
+                <div className="p-6">
+                  <h3 className="mb-2 text-xl font-semibold text-gray-900">
+                    {newsletter.title}
+                  </h3>
+                  <div className="mb-4 flex items-center space-x-4 text-sm text-gray-500">
+                    <span className="flex items-center">
+                      <Users className="mr-1 h-4 w-4" />
+                      {newsletter.author}
+                    </span>
+                    <span className="flex items-center">
+                      <Clock className="mr-1 h-4 w-4" />
+                      {newsletter.readTime}
+                    </span>
+                    <span className="flex items-center">
+                      <Star className="mr-1 h-4 w-4" />
+                      {newsletter.likes}
+                    </span>
                   </div>
-                  <div className="ml-4 flex-1">
-                    <h3 className="text-sm font-medium text-gray-900">{newsletter.title}</h3>
-                    <div className="flex items-center mt-1 text-xs text-gray-500">
-                      <Clock className="h-3 w-3 mr-1" />
-                      <span>{new Date(newsletter.date).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-                  <button className="ml-4 text-gray-400 hover:text-gray-600">
-                    <ChevronRight className="h-5 w-5" />
-                  </button>
+                  <Link href={`/newsletter/${newsletter.id}`} >
+                    <Button variant="outline" className="w-full">
+                      Read Newsletter
+                    </Button>
+                  </Link>
                 </div>
-              ))}
-              <button className="w-full mt-4 p-4 border-2 border-dashed border-gray-200 rounded-lg text-gray-500 hover:border-blue-600 hover:text-blue-600 transition-colors flex items-center justify-center">
-                <Plus className="h-5 w-5 mr-2" />
-                <span className="font-medium">Create New Newsletter</span>
-              </button>
-            </div>
+              </motion.article>
+            ))}
           </div>
         </div>
-      </main>
+      </section>
+      
+      {/* Old Newsletters Section */}
+      <section className="relative">
+        <div className="mx-auto max-w-7xl">
+          <motion.h2
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="mb-12 text-center text-3xl font-bold text-gray-900"
+          >
+            Newsletters
+          </motion.h2>
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {oldNewsletters.map((newsletter, index) => (
+              <motion.article
+                key={newsletter.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="group overflow-hidden rounded-xl border bg-white shadow-sm transition-all hover:shadow-lg"
+              >
+                <div className="p-6">
+                  <Link href={`/newsletter/${newsletter.id}`} >
+                    <h3 className="mb-2 text-xl font-semibold text-gray-900">
+                      {newsletter.title}
+                    </h3>
+                    <div className="mb-4 flex items-center space-x-4 text-sm text-gray-500">
+                      <span className="flex items-center">
+                        <Users className="mr-1 h-4 w-4" />
+                        {newsletter.author}
+                      </span>
+                      <span className="flex items-center">
+                        <Clock className="mr-1 h-4 w-4" />
+                        {newsletter.readTime}
+                      </span>
+                      <span className="flex items-center">
+                        <Star className="mr-1 h-4 w-4" />
+                        {newsletter.likes}
+                      </span>
+                    </div>                    
+                  </Link>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

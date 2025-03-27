@@ -2,19 +2,34 @@ import React, { useState } from "react";
 import { Mail, Lock, User, ArrowRight } from "lucide-react";
 import { Button } from "@/components/Button";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const USERTYPES = ["Climber", "Artisan"];
 
-export default function Signup() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+export default function Signup({
+  setUserData,
+}: {
+  setUserData: (data: any) => void;
+}) {
+  const [email, setEmail] = useState("haridas@gmail.com");
+  const [password, setPassword] = useState("asdfghjkl;'");
+  const [name, setName] = useState("karuto");
+  const [userType, setUserType] = useState(USERTYPES[0]);
+
+  const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setUserData({
+      isLoggedIn: true,
+      name,
+      email,
+      password,
+      userType,
+    });
+    router.push(`/${userType}`);
     // Handle authentication logic here
   };
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Main Content */}
@@ -31,6 +46,7 @@ export default function Signup() {
             </p>
           </div>
           <form className="space-y-6" onSubmit={handleSubmit}>
+            {/* Name */}
             <div>
               <label
                 htmlFor="name"
@@ -53,7 +69,7 @@ export default function Signup() {
                 />
               </div>
             </div>
-
+            {/* Email */}
             <div>
               <label
                 htmlFor="email"
@@ -76,7 +92,7 @@ export default function Signup() {
                 />
               </div>
             </div>
-
+            {/* Password */}
             <div>
               <label
                 htmlFor="password"
@@ -98,6 +114,9 @@ export default function Signup() {
                   className="pl-10 p-2 block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm border-gray-300 rounded-md py-2 text-gray-900 leading-6"
                 />
               </div>
+            </div>
+            {/* User Type */}
+            <div>
               <div className="mt-4">
                 <label className="block text-sm font-medium text-gray-700">
                   User Type
@@ -108,9 +127,13 @@ export default function Signup() {
                       <input
                         id={type}
                         name="userType"
-                        type="radio"
                         value={type}
+                        type="radio"
+                        onChange={(e) =>
+                          setUserType(e.target.value.toLowerCase())
+                        }
                         className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 bg-blue-600"
+                        required
                       />
                       <label
                         htmlFor={type}
@@ -123,7 +146,7 @@ export default function Signup() {
                 </div>
               </div>
             </div>
-
+            {/* Submit */}
             <div>
               <Button
                 type="submit"
