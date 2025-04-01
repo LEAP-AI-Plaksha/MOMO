@@ -1,30 +1,109 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { 
-  BookOpenCheck, 
-  Upload, 
-  FileText, 
-  Mail, 
-  Clock, 
-  Plus,
+  BookOpenCheck,
   LogOut,
-  ChevronRight,
-  Layout
+  Upload,
+  File,
+  X,
+  AlertCircle,
+  CheckCircle2,
+  Loader2
 } from 'lucide-react';
 
-// Mock data for demonstration
-const recentTranscriptions = [
-  { id: 1, title: 'Introduction to Psychology', date: '2024-03-10', duration: '45:32' },
-  { id: 2, title: 'Advanced Mathematics Lecture 3', date: '2024-03-09', duration: '52:18' },
-  { id: 3, title: 'World History: Renaissance', date: '2024-03-08', duration: '38:45' },
+const SUPPORTED_FORMATS = ['.mp4', '.mov', '.avi'];
+const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB in bytes
+
+const CATEGORIES = [
+  'Computer Science',
+  'Business',
+  'Mathematics',
+  'Physics',
+  'Chemistry',
+  'Biology',
+  'History',
+  'Literature',
+  'Psychology',
+  'Other',
 ];
 
-const savedNewsletters = [
-  { id: 1, title: 'Weekly Psychology Insights', date: '2024-03-10' },
-  { id: 2, title: 'Math Concepts Explained', date: '2024-03-09' },
+const LANGUAGES = [
+  'English',
+  'Spanish',
+  'French',
+  'German',
+  'Chinese',
+  'Japanese',
+  'Korean',
+  'Russian',
+  'Arabic',
+  'Other'
 ];
 
 export default function Page() {
-  const userName = "Sarah"; // This would come from your auth system
+  const [file, setFile] = useState<File | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'processing' | 'complete' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Form state
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [category, setCategory] = useState('');
+  const [language, setLanguage] = useState('English');
+
+  const handleFileSelect = (selectedFile: File) => {
+    setErrorMessage('');
+    
+    if (!SUPPORTED_FORMATS.some(format => selectedFile.name.toLowerCase().endsWith(format))) {
+      setErrorMessage('Unsupported file type. Please upload a valid video file.');
+      return;
+    }
+
+    if (selectedFile.size > MAX_FILE_SIZE) {
+      setErrorMessage('File size exceeds 500MB limit. Please upload a smaller file.');
+      return;
+    }
+
+    setFile(selectedFile);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    if (e.dataTransfer.files.length > 0) {
+      handleFileSelect(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!file) return;
+
+    setUploadStatus('uploading');
+    
+    // Simulate upload progress
+    const interval = setInterval(() => {
+      setUploadProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        return prev + 10;
+      });
+    }, 500);
+
+    // Simulate upload completion
+    setTimeout(() => {
+      clearInterval(interval);
+      setUploadStatus('processing');
+      setTimeout(() => {
+        setUploadStatus('complete');
+      }, 2000);
+    }, 5000);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -40,7 +119,7 @@ export default function Page() {
               <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
                 Home
               </a>
-              <a href="#" className="text-blue-600 hover:text-blue-700 px-3 py-2 rounded-md text-sm font-medium">
+              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
                 Dashboard
               </a>
               <button className="flex items-center text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
@@ -53,102 +132,199 @@ export default function Page() {
       </header> */}
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Welcome back, {userName}!</h1>
+      <main className="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Upload Your Lecture</h1>
           <p className="mt-2 text-gray-600">
-            Manage your lectures, transcriptions, and newsletters in one place.
+            Upload your lecture video and get an instant AI-powered transcription.
           </p>
         </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <button className="flex items-center justify-center p-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors group">
-            <Upload className="h-6 w-6 mr-2" />
-            <span className="font-medium">Upload New Lecture</span>
-            <ChevronRight className="h-5 w-5 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </button>
-          <button className="flex items-center justify-center p-6 bg-white text-gray-900 rounded-lg border-2 border-gray-200 hover:border-blue-600 transition-colors group">
-            <FileText className="h-6 w-6 mr-2 text-blue-600" />
-            <span className="font-medium">View All Lectures</span>
-            <ChevronRight className="h-5 w-5 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </button>
-          <button className="flex items-center justify-center p-6 bg-white text-gray-900 rounded-lg border-2 border-gray-200 hover:border-blue-600 transition-colors group">
-            <Mail className="h-6 w-6 mr-2 text-blue-600" />
-            <span className="font-medium">Create Newsletter</span>
-            <ChevronRight className="h-5 w-5 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </button>
-        </div>
-
-        {/* Dashboard Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Recent Transcriptions */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Recent Transcriptions</h2>
-              <button className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center">
-                View All
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </button>
-            </div>
-            <div className="space-y-4">
-              {recentTranscriptions.map((transcription) => (
-                <div key={transcription.id} className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                  <div className="flex-shrink-0">
-                    <FileText className="h-8 w-8 text-blue-600" />
-                  </div>
-                  <div className="ml-4 flex-1">
-                    <h3 className="text-sm font-medium text-gray-900">{transcription.title}</h3>
-                    <div className="flex items-center mt-1 text-xs text-gray-500">
-                      <Clock className="h-3 w-3 mr-1" />
-                      <span>{transcription.duration}</span>
-                      <span className="mx-2">•</span>
-                      <span>{new Date(transcription.date).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-                  <button className="ml-4 text-gray-400 hover:text-gray-600">
-                    <ChevronRight className="h-5 w-5" />
-                  </button>
+        <form onSubmit={handleUpload} className="space-y-6">
+          {/* Upload Box */}
+          <div 
+            className={`relative border-2 border-dashed rounded-lg p-8 text-center
+              ${isDragging ? 'border-blue-600 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}
+              ${file ? 'bg-gray-50' : ''}`}
+            onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+            onDragLeave={() => setIsDragging(false)}
+            onDrop={handleDrop}
+          >
+            {!file ? (
+              <div className="space-y-4">
+                <div className="flex justify-center">
+                  <Upload className="h-12 w-12 text-gray-400" />
                 </div>
-              ))}
+                <div>
+                  <p className="text-lg font-medium text-gray-900">
+                    Drag and drop your video file here
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    or click to browse from your computer
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  Select File
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  className="hidden"
+                  accept={SUPPORTED_FORMATS.join(',')}
+                  onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])}
+                />
+                <p className="text-xs text-gray-500 mt-2">
+                  Supported formats: MP4, MOV, AVI (max 500MB)
+                </p>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between p-4 bg-white rounded-lg">
+                <div className="flex items-center">
+                  <File className="h-8 w-8 text-blue-600" />
+                  <div className="ml-4 text-left">
+                    <p className="text-sm font-medium text-gray-900">{file.name}</p>
+                    <p className="text-xs text-gray-500">
+                      {(file.size / (1024 * 1024)).toFixed(2)} MB
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setFile(null)}
+                  className="text-gray-400 hover:text-gray-500"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+            )}
+
+            {errorMessage && (
+              <div className="absolute inset-x-0 -bottom-12 flex items-center justify-center text-red-600 text-sm">
+                <AlertCircle className="h-4 w-4 mr-1" />
+                {errorMessage}
+              </div>
+            )}
+          </div>
+
+          {/* Form Fields */}
+          <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm text-gray-900">
+            <div>
+              <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                Lecture Title
+              </label>
+              <input
+                type="text"
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="mt-1 pl-3 pr-3 pt-1 pb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                Description
+              </label>
+              <textarea
+                id="description"
+                rows={3}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="mt-1 pl-3 pr-3 pt-1 pb-1 min-h-40 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div>
+                <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+                  Category
+                </label>
+                <select
+                  id="category"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="mt-1 pl-3 pr-3 pt-1 pb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  required
+                >
+                  <option value="">Select a category</option>
+                  {CATEGORIES.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="language" className="block text-sm font-medium text-gray-700">
+                  Language
+                </label>
+                <select
+                  id="language"
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value)}
+                  className="mt-1 pl-3 pr-3 pt-1 pb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  required
+                >
+                  {LANGUAGES.map(lang => (
+                    <option key={lang} value={lang}>{lang}</option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
 
-          {/* Saved Newsletters */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Saved Newsletters</h2>
-              <button className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center">
-                View All
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </button>
-            </div>
-            <div className="space-y-4">
-              {savedNewsletters.map((newsletter) => (
-                <div key={newsletter.id} className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                  <div className="flex-shrink-0">
-                    <Mail className="h-8 w-8 text-blue-600" />
-                  </div>
-                  <div className="ml-4 flex-1">
-                    <h3 className="text-sm font-medium text-gray-900">{newsletter.title}</h3>
-                    <div className="flex items-center mt-1 text-xs text-gray-500">
-                      <Clock className="h-3 w-3 mr-1" />
-                      <span>{new Date(newsletter.date).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-                  <button className="ml-4 text-gray-400 hover:text-gray-600">
-                    <ChevronRight className="h-5 w-5" />
-                  </button>
+          {/* Upload Progress */}
+          {uploadStatus !== 'idle' && (
+            <div className="bg-white p-6 rounded-lg shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  {uploadStatus === 'uploading' && (
+                    <Loader2 className="h-5 w-5 text-blue-600 animate-spin mr-2" />
+                  )}
+                  {uploadStatus === 'processing' && (
+                    <Loader2 className="h-5 w-5 text-blue-600 animate-spin mr-2" />
+                  )}
+                  {uploadStatus === 'complete' && (
+                    <CheckCircle2 className="h-5 w-5 text-green-600 mr-2" />
+                  )}
+                  <span className="font-medium text-gray-900">
+                    {uploadStatus === 'uploading' && 'Uploading...'}
+                    {uploadStatus === 'processing' && 'Processing...'}
+                    {uploadStatus === 'complete' && 'Upload Complete!'}
+                  </span>
                 </div>
-              ))}
-              <button className="w-full mt-4 p-4 border-2 border-dashed border-gray-200 rounded-lg text-gray-500 hover:border-blue-600 hover:text-blue-600 transition-colors flex items-center justify-center">
-                <Plus className="h-5 w-5 mr-2" />
-                <span className="font-medium">Create New Newsletter</span>
-              </button>
+                <span className="text-sm text-gray-500">
+                  {uploadProgress}%
+                </span>
+              </div>
+              <div className="overflow-hidden bg-gray-200 rounded-full">
+                <div
+                  className="h-2 bg-blue-600 rounded-full transition-all duration-500"
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
             </div>
+          )}
+
+          {/* Submit Button */}
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              disabled={!file || !title || !category || uploadStatus !== 'idle'}
+              className={`inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white
+                ${(!file || !title || !category || uploadStatus !== 'idle')
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
+                }`}
+            >
+              Upload & Transcribe
+            </button>
           </div>
-        </div>
+        </form>
       </main>
     </div>
   );

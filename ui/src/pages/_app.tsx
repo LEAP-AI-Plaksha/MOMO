@@ -1,8 +1,7 @@
 import { useState } from "react";
 import Layout from "../components/Layout";
 import "../styles/globals.css";
-import { FileProvider } from "@/lib/FileContext";
-
+import { WebSocketProvider } from "@/context/WebSocktContext";
 import type { AppProps } from "next/app";
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -15,7 +14,7 @@ export default function App({ Component, pageProps }: AppProps) {
   });
 
   return (
-    <FileProvider>
+    <WebSocketProvider>
       <Layout userData={userData}>
         <Component {...pageProps} setUserData={setUserData} />
         {(() => {
@@ -28,6 +27,6 @@ export default function App({ Component, pageProps }: AppProps) {
           return null;
         })()}
       </Layout>
-    </FileProvider>
+    </WebSocketProvider>
   );
 }
