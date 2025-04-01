@@ -29,4 +29,9 @@ def get_summary(transcription):
 
 
 if __name__ == "__main__":
-    pass
+    summary=''
+    with open('C:\\Users\\akash\\Downloads\\Joe Rogan Experience #1828 - Michio Kaku_transcription.txt', 'r') as f:
+        content = f.read()
+        summary=summary+get_summary(str(content))
+    with open('summary.txt', 'w') as file:
+        file.write(summary)

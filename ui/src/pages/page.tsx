@@ -1,9 +1,12 @@
+"use client"
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Clock, Star, Users } from 'lucide-react';
 import { Button } from '@/components/Button';
+import { useState } from 'react';
 
 const recentNewsletters = [
+  
   {
     id: '1',
     title: 'Understanding Modern Web Architecture',
