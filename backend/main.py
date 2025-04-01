@@ -4,7 +4,6 @@ import tempfile
 import logging
 import os
 import gc
-import subprocess
 from concurrent.futures import ThreadPoolExecutor
 from whisper_model import WhisperEngine
 import soundfile as sf
@@ -15,8 +14,6 @@ from fastapi import (
 )
 import uuid
 from fastapi.middleware.cors import CORSMiddleware
-import json
-import time
 from starlette.websockets import WebSocketState
 from extract_audio import extract_audio_from_buffer
 from summary import get_summary
@@ -52,35 +49,39 @@ for i in range(NUM_ENGINES):
 # Thread pool for transcription tasks
 transcription_executor = ThreadPoolExecutor(max_workers=NUM_ENGINES)
 
+
 async def transcribe_chunk(chunk_path: str, chunk_id: int, engine_id: int):
     """Transcribe a single audio chunk using the specified engine"""
     try:
-        logger.info(f"Starting transcription of chunk {chunk_id} with engine {engine_id}")
-        
+        logger.info(
+            f"Starting transcription of chunk {chunk_id} with engine {engine_id}"
+        )
+
         # Get the specific engine
         engine = whisper_engines[engine_id]
-        
+
         # Run transcription in thread pool
         loop = asyncio.get_running_loop()
         text = await loop.run_in_executor(
-            transcription_executor, 
-            engine.transcribe, 
-            chunk_path
+            transcription_executor, engine.transcribe, chunk_path
         )
-        
-        logger.info(f"Completed transcription of chunk {chunk_id} with engine {engine_id}")
-        
+
+        logger.info(
+            f"Completed transcription of chunk {chunk_id} with engine {engine_id}"
+        )
+
         # Clean up temp file
         try:
             os.unlink(chunk_path)
             logger.info(f"Deleted temp file for chunk {chunk_id}")
         except Exception as e:
             logger.error(f"Error deleting temp file {chunk_path}: {e}")
-            
+
         return {"chunk_id": chunk_id, "text": text}
     except Exception as e:
         logger.error(f"Error transcribing chunk {chunk_id}: {e}")
         import traceback
+
         traceback.print_exc()
         return {"chunk_id": chunk_id, "text": f"[Transcription error: {str(e)}]"}
 
@@ -115,7 +116,7 @@ async def process_audio_file(audio_path: str, websocket: WebSocket, session_id: 
         position = 0
         chunk_id = 0
         chunk_files = []
-        
+
         # Step 1: Create all chunk files
         logger.info("Creating audio chunks...")
         while position < len(audio):
@@ -126,42 +127,44 @@ async def process_audio_file(audio_path: str, websocket: WebSocket, session_id: 
             with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as chunk_file:
                 chunk_path = chunk_file.name
                 sf.write(chunk_path, chunk_audio, samplerate)
-                
+
                 logger.info(
                     f"Created chunk {chunk_id}: {position/samplerate:.2f}s to {end/samplerate:.2f}s at {chunk_path}"
                 )
-                
+
                 chunk_files.append((chunk_id, chunk_path))
-                
+
             position += chunk_size - overlap
             chunk_id += 1
-            
+
         combined_text = ""
-        
+
         # Step 2: Process chunks in batches of NUM_ENGINES
         for i in range(0, len(chunk_files), NUM_ENGINES):
-            batch = chunk_files[i:i + NUM_ENGINES]
-            
+            batch = chunk_files[i : i + NUM_ENGINES]
+
             # Create tasks for this batch
             tasks = []
             for idx, (chunk_id, chunk_path) in enumerate(batch):
                 engine_id = idx % NUM_ENGINES
-                task = asyncio.create_task(transcribe_chunk(chunk_path, chunk_id, engine_id))
+                task = asyncio.create_task(
+                    transcribe_chunk(chunk_path, chunk_id, engine_id)
+                )
                 tasks.append(task)
-                
+
             logger.info(f"Processing batch of {len(tasks)} chunks")
-            
+
             # Wait for all tasks in this batch to complete
             results = await asyncio.gather(*tasks)
-            
+
             # Sort results by chunk_id to maintain order
             results.sort(key=lambda x: x["chunk_id"])
-            
+
             # Process results in order
             for result in results:
                 chunk_text = result["text"]
                 logger.info(f"Chunk {result['chunk_id']} transcription: {chunk_text}")
-                
+
                 # Send chunk to client
                 await websocket.send_json(
                     {
@@ -171,9 +174,9 @@ async def process_audio_file(audio_path: str, websocket: WebSocket, session_id: 
                         "text": chunk_text,
                     }
                 )
-                
+
                 combined_text += " " + chunk_text
-                
+
             # Force garbage collection after each batch
             gc.collect()
 
@@ -182,6 +185,7 @@ async def process_audio_file(audio_path: str, websocket: WebSocket, session_id: 
     except Exception as e:
         logger.error(f"Error in processing audio: {e}")
         import traceback
+
         traceback.print_exc()
         return ""
 
@@ -290,7 +294,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 "transcription": transcription,
             }
         )
-        
+
         # Generate and send summary
         logger.info("Generating summary...")
         summary_of_transcription = get_summary(transcription)
@@ -301,7 +305,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 "summary": summary_of_transcription,
             }
         )
-        
+
         # Cleanup
         try:
             if os.path.exists(audio_path):
